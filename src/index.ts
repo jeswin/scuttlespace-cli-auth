@@ -1,8 +1,8 @@
 import humanist from "humanist";
 import pg = require("pg");
+import { Response as CLIResponse, Response } from "scuttlespace-cli-common";
 import * as authService from "scuttlespace-service-auth";
 import { ICreateAccountArgs } from "scuttlespace-service-auth/dist/create-account";
-
 /*
   Supported commands
   
@@ -48,6 +48,7 @@ const parser = humanist([
 
 export default async function handle(
   command: string,
+  messageId: string,
   sender: string,
   pool: pg.Pool
 ) {
@@ -71,21 +72,18 @@ export default async function handle(
           username
         };
         await authService.createAccount(accountInfo, pool);
-
+        return new Response(
+          `The id '${username}' is now accessible at https://scuttle.space/${username}.`,
+          messageId
+        );
       } else if (status.status === "TAKEN") {
-        
+        return new Response(
+          `The id ${username} already exists. Choose something else.`,
+          messageId
+        );
       } else if (status.status === "OWN") {
-      }
 
-      const identityStatus = await checkIdentityStatus(
-        identityId,
-        message.sender
-      );
-      return identityStatus.status === "AVAILABLE"
-        ? await createIdentity(identityId, sender, command, message)
-        : identityStatus.status === "TAKEN"
-          ? await unavailableIdentity(identityId, sender, command, message)
-          : await modifyIdentity(identityStatus, args, command, message);
+      }
     }
   }
 }
