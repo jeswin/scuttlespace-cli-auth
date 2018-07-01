@@ -1,4 +1,7 @@
-import humanist, { IResult as IHumanistResult } from "humanist";
+import humanist from "humanist";
+import pg = require("pg");
+import * as authService from "scuttlespace-service-auth";
+import { ICreateAccountArgs } from "scuttlespace-service-auth/dist/create-account";
 
 /*
   Supported commands
@@ -12,26 +15,23 @@ import humanist, { IResult as IHumanistResult } from "humanist";
   id jeswin 
 
   # Gives another user access to the identity
-  id anongamers member jeswin
-
-  # Gives another user admin access to the identity
-  id anongamers admin jeswin
+  id add jeswin
 
   # Disassociate a user from the identity
   # There needs to be at least one admit
-  id anongamers remove jeswin
+  id remove jeswin
 
   # Sets custom domain for username
-  id jeswin domain jeswin.org
+  id domain jeswin.org
 
   # Disables an identity
-  id jeswin disable
+  id disable
   
   # Enables an identity
-  id jeswin enable 
+  id enable 
 
   # Deletes a previously disabled identity
-  id jeswin destroy 
+  id destroy 
 */
 
 const parser = humanist([
@@ -46,12 +46,37 @@ const parser = humanist([
   ["destroy", "flag"]
 ]);
 
-export default function handle(command: string, sender: string) {
+export default async function handle(
+  command: string,
+  sender: string,
+  pool: pg.Pool
+) {
   const lcaseCommand = command.toLowerCase();
   if (lcaseCommand.startsWith("id ")) {
     const args: any = parser(command);
-    const identityId = args.id;
-    if (isValidIdentity(identityId)) {
+    const username: string = args.id;
+    if (isValidIdentity(username)) {
+      const status = await authService.checkAccountStatus(
+        username,
+        sender,
+        pool
+      );
+
+      if (status.status === "AVAILABLE") {
+        const accountInfo: ICreateAccountArgs = {
+          about: "",
+          domain: "",
+          enabled: true,
+          networkId: sender,
+          username
+        };
+        await authService.createAccount(accountInfo, pool);
+
+      } else if (status.status === "TAKEN") {
+        
+      } else if (status.status === "OWN") {
+      }
+
       const identityStatus = await checkIdentityStatus(
         identityId,
         message.sender

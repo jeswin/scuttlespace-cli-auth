@@ -9,7 +9,8 @@
   },
   "license": "AGPL",
   "dependencies": {
-    "humanist": "^0.0.4"
+    "humanist": "^0.0.4",
+    "scuttlespace-service-auth": "0.0.2"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.0",
