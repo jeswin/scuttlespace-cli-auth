@@ -244,19 +244,9 @@ scuttlespace-cli-common@^0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/scuttlespace-cli-common/-/scuttlespace-cli-common-0.0.1.tgz#b397ec0c9947a2efc1e716c748f95d0190b21afe"
 
-scuttlespace-service-auth@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/scuttlespace-service-auth/-/scuttlespace-service-auth-0.0.2.tgz#de79636e2f0c3896d313203bb17d1699d877da1f"
-  dependencies:
-    "@types/node" "^10.3.2"
-    "@types/pg" "^7.4.9"
-    pg "^7.4.3"
-    psychopiggy "^0.0.2"
-    scuttlespace-service-auth "^0.0.1"
-
-scuttlespace-service-auth@^0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/scuttlespace-service-auth/-/scuttlespace-service-auth-0.0.1.tgz#9412e3669adc44daa9a8e4db44bfbd6484383cf4"
+scuttlespace-service-auth@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/scuttlespace-service-auth/-/scuttlespace-service-auth-0.0.7.tgz#69c5b6b695af94acad6833393f32107f688e3f48"
   dependencies:
     "@types/node" "^10.3.2"
     "@types/pg" "^7.4.9"
