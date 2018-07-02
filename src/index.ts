@@ -91,7 +91,14 @@ export default async function handle(
             );
           }
         } else {
-          
+          if (status.status === "AVAILABLE") {
+            return await createAccount(username, sender, messageId, pool);
+          } else if (status.status === "TAKEN") {
+            return new Response(
+              `The id ${username} already exists. Choose something else.`,
+              messageId
+            );
+          }
         }
         // Rename
         if (networkIdAccount && status.status === "AVAILABLE") {
