@@ -3,41 +3,45 @@ import pg = require("pg");
 import { Response as CLIResponse, Response } from "scuttlespace-cli-common";
 import * as authService from "scuttlespace-service-auth";
 import { ICreateAccountArgs } from "scuttlespace-service-auth/dist/create-account";
+import createAccount from "./create-account";
+import { renameAccount } from "./rename-account";
 /*
   Supported commands
   
-  A given sender can have multiple usernames associated with it, one of which will be in is_primary state.
+  A given networkId can have multiple usernames associated with it, one of which will be in is_primary state.
 
   Account Management
   ------------------
-  # Creates a new identity, owned by the sender's pkey
+  # Creates a new identity, owned by the networkId's pkey
   # If the identity already exists, sets it as active.
-  id create jeswin 
+  user id jeswin 
 
   # Sets some text about the current user
-  id about Lives in a cold, dark cave.
+  user about Lives in a cold, dark cave.
 
   # Gives another user access to the identity
-  id link alice
+  user link alice
 
   # Disassociate a user from the identity
-  id delink alice
+  user delink alice
 
   # Sets custom domain for username
-  id domain jeswin.org
+  user domain jeswin.org
 
   # Disables an identity
-  id disable
+  user disable
   
   # Enables an identity
-  id enable 
+  user enable 
 
   # Deletes a previously disabled identity
-  id destroy 
+  user destroy 
 */
 
+const;
+
 const parser = humanist([
-  ["create", "single"],
+  ["id", "single"],
   ["about", "multi", { join: true }],
   ["domain", "single"],
   ["link", "single"],
@@ -58,42 +62,63 @@ export default async function handle(
   pool: pg.Pool
 ) {
   const lcaseCommand = command.toLowerCase();
-  if (lcaseCommand.startsWith("id ")) {
+  if (lcaseCommand.startsWith("user ")) {
     const args: any = parser(command);
-    if (args.create) {
-      if (isValidIdentity(args.id)) {
-        const username: string = args.id;
+
+    if (args.id) {
+      const username: string = args.id;
+
+      if (isValidIdentity(username)) {
+        const networkIdAccount = await authService.getAccountForCaller(
+          sender,
+          pool
+        );
+
         const status = await authService.checkAccountStatus(
           username,
           sender,
           pool
         );
 
+        // Create
+        if (!networkIdAccount) {
+          if (status.status === "AVAILABLE") {
+            return await createAccount(username, sender, messageId, pool);
+          } else if (status.status === "TAKEN") {
+            return new Response(
+              `The id ${username} already exists. Choose something else.`,
+              messageId
+            );
+          }
+        } else {
+          
+        }
+        // Rename
+        if (networkIdAccount && status.status === "AVAILABLE") {
+        }
+
         if (status.status === "AVAILABLE") {
-          const accountInfo: ICreateAccountArgs = {
-            about: "",
-            domain: "",
-            enabled: true,
-            networkId: sender,
-            username
-          };
-          await authService.createAccount(accountInfo, pool);
-          return new Response(
-            `The id '${username}' is now accessible at https://scuttle.space/${username}.`,
-            messageId
-          );
+          return await createAccount(args.id, sender, messageId, pool);
         } else if (status.status === "TAKEN") {
           return new Response(
             `The id ${username} already exists. Choose something else.`,
             messageId
           );
-        } else if (status.status === "OWN") {
-          //return new Response();
         }
       }
+    } else if (args.rename) {
+      const username: string = args.create;
+      const status = await authService.checkAccountStatus(
+        username,
+        sender,
+        pool
+      );
     } else {
-      const senderAccount = await authService.getAccountForCaller(sender, pool);
-      if (senderAccount) {
+      const networkIdAccount = await authService.getAccountForCaller(
+        sender,
+        pool
+      );
+      if (networkIdAccount) {
         if (exists(args.about)) {
           await authService.editAbout(args.about, sender, pool);
         }
@@ -115,7 +140,7 @@ export default async function handle(
         }
       } else {
         return new Response(
-          `You don't have an account. Create an account first with id <username>. eg: id create alice`,
+          `You don't have an account. Create an account first with id create <username>. eg: id create alice`,
           messageId
         );
       }
