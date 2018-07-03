@@ -1,9 +1,9 @@
 import humanist from "humanist";
 import pg = require("pg");
+import { ServiceResult } from "scuttlespace-api-common";
 import { Response } from "scuttlespace-cli-common";
-import * as authService from "scuttlespace-service-auth";
-import createAccount from "./create-account";
-import renameAccount from "./rename-account";
+import * as authServiceModule from "scuttlespace-service-auth";
+import { ICallContext } from "standard-api";
 
 /*
   Supported commands
@@ -38,6 +38,12 @@ import renameAccount from "./rename-account";
   user destroy 
 */
 
+let authService: typeof authServiceModule = authServiceModule;
+
+export function inject(mods: { auth: typeof authServiceModule }) {
+  authService = mods.auth;
+}
+
 const parser = humanist([
   ["id", "single"],
   ["about", "multi", { join: true }],
@@ -53,11 +59,25 @@ function exists(x: any): boolean {
   return typeof x !== "undefined";
 }
 
+function ensureValidResult<T>(result: ServiceResult<T>): T | never {
+  if (result.type === "data") {
+    return result.data;
+  } else {
+    throw new Error(result.error.toString());
+  }
+}
+
+export interface IHostSettings {
+  hostname: string;
+}
+
 export default async function handle(
   command: string,
   messageId: string,
   sender: string,
-  pool: pg.Pool
+  pool: pg.Pool,
+  hostSettings: IHostSettings,
+  context: ICallContext
 ) {
   const lcaseCommand = command.toLowerCase();
   if (lcaseCommand.startsWith("user ")) {
@@ -67,18 +87,43 @@ export default async function handle(
       const username: string = args.id;
 
       if (isValidIdentity(username)) {
-        const account = await authService.getAccountForCaller(sender, pool);
+        const accountResult = await authService.getAccountForCaller(
+          sender,
+          pool,
+          context
+        );
 
-        const status = await authService.checkAccountStatus(
+        const account = ensureValidResult(accountResult);
+
+        const statusResult = await authService.checkAccountStatus(
           username,
           sender,
-          pool
+          pool,
+          context
         );
+
+        const status = ensureValidResult(statusResult);
 
         // create
         if (!account) {
           if (status.status === "AVAILABLE") {
-            return await createAccount(username, sender, messageId, pool);
+            await authService.createAccount(
+              {
+                about: "",
+                domain: "",
+                enabled: true,
+                networkId: sender,
+                username
+              },
+              pool,
+              context
+            );
+            return new Response(
+              `The id '${username}' is now accessible at https://${
+                hostSettings.hostname
+              }/${username}.`,
+              messageId
+            );
           } else if (status.status === "TAKEN") {
             return new Response(
               `The id ${username} already exists. Choose something else.`,
@@ -87,7 +132,12 @@ export default async function handle(
           }
         } else {
           if (status.status === "AVAILABLE") {
-            return await renameAccount(username, sender, messageId, pool);
+            return new Response(
+              `The id '${username}' is now accessible at https://${
+                hostSettings.hostname
+              }/${username}.`,
+              messageId
+            );
           } else if (status.status === "TAKEN") {
             return new Response(
               `The id ${username} already exists. Choose something else.`,
@@ -102,16 +152,20 @@ export default async function handle(
         );
       }
     } else {
-      const account = await authService.getAccountForCaller(sender, pool);
+      const account = await authService.getAccountForCaller(
+        sender,
+        pool,
+        context
+      );
       if (account) {
         // about
         if (exists(args.about)) {
-          await authService.editAbout(args.about, sender, pool);
+          await authService.editAbout(args.about, sender, pool, context);
         }
 
         // domain
         if (exists(args.domain)) {
-          await authService.editDomain(args.domain, sender, pool);
+          await authService.editDomain(args.domain, sender, pool, context);
         }
 
         // link | unlink
@@ -121,7 +175,8 @@ export default async function handle(
             args.link,
             sender,
             ["POST"],
-            pool
+            pool,
+            context
           );
         } else if (exists(args.unlink)) {
           await authService.addPermissions(
@@ -129,26 +184,27 @@ export default async function handle(
             args.unlink,
             sender,
             ["POST"],
-            pool
+            pool,
+            context
           );
         }
 
         // enable | disable | destroy
         if (exists(args.enable)) {
-          await authService.enable(sender, pool);
+          await authService.enable(sender, pool, context);
           return new Response(
             `The user ${account.username} was disabled.`,
             messageId
           );
         } else if (exists(args.disable)) {
-          await authService.disable(sender, pool);
+          await authService.disable(sender, pool, context);
           return new Response(
             `The user ${account.username} was disabled.`,
             messageId
           );
         } else if (exists(args.destroy)) {
           try {
-            await authService.destroy(sender, pool);
+            await authService.destroy(sender, pool, context);
             return new Response(
               `The user ${account.username} was deleted.`,
               messageId
