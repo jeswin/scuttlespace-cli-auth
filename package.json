@@ -11,7 +11,7 @@
   "dependencies": {
     "humanist": "^0.0.4",
     "scuttlespace-cli-common": "^0.0.1",
-    "scuttlespace-service-auth": "^0.0.7"
+    "scuttlespace-service-auth": "^0.0.9"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.0",

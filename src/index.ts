@@ -1,10 +1,10 @@
 import humanist from "humanist";
 import pg = require("pg");
-import { Response as CLIResponse, Response } from "scuttlespace-cli-common";
+import { Response } from "scuttlespace-cli-common";
 import * as authService from "scuttlespace-service-auth";
-import { ICreateAccountArgs } from "scuttlespace-service-auth/dist/create-account";
 import createAccount from "./create-account";
-import { renameAccount } from "./rename-account";
+import renameAccount from "./rename-account";
+
 /*
   Supported commands
   
@@ -38,8 +38,6 @@ import { renameAccount } from "./rename-account";
   user destroy 
 */
 
-const;
-
 const parser = humanist([
   ["id", "single"],
   ["about", "multi", { join: true }],
@@ -69,10 +67,7 @@ export default async function handle(
       const username: string = args.id;
 
       if (isValidIdentity(username)) {
-        const networkIdAccount = await authService.getAccountForCaller(
-          sender,
-          pool
-        );
+        const account = await authService.getAccountForCaller(sender, pool);
 
         const status = await authService.checkAccountStatus(
           username,
@@ -80,8 +75,8 @@ export default async function handle(
           pool
         );
 
-        // Create
-        if (!networkIdAccount) {
+        // create
+        if (!account) {
           if (status.status === "AVAILABLE") {
             return await createAccount(username, sender, messageId, pool);
           } else if (status.status === "TAKEN") {
@@ -92,7 +87,7 @@ export default async function handle(
           }
         } else {
           if (status.status === "AVAILABLE") {
-            return await createAccount(username, sender, messageId, pool);
+            return await renameAccount(username, sender, messageId, pool);
           } else if (status.status === "TAKEN") {
             return new Response(
               `The id ${username} already exists. Choose something else.`,
@@ -100,50 +95,73 @@ export default async function handle(
             );
           }
         }
-        // Rename
-        if (networkIdAccount && status.status === "AVAILABLE") {
-        }
-
-        if (status.status === "AVAILABLE") {
-          return await createAccount(args.id, sender, messageId, pool);
-        } else if (status.status === "TAKEN") {
-          return new Response(
-            `The id ${username} already exists. Choose something else.`,
-            messageId
-          );
-        }
+      } else {
+        return new Response(
+          `Invalid username. For now, only alphabets, numbers and underscore is allowed.`,
+          messageId
+        );
       }
-    } else if (args.rename) {
-      const username: string = args.create;
-      const status = await authService.checkAccountStatus(
-        username,
-        sender,
-        pool
-      );
     } else {
-      const networkIdAccount = await authService.getAccountForCaller(
-        sender,
-        pool
-      );
-      if (networkIdAccount) {
+      const account = await authService.getAccountForCaller(sender, pool);
+      if (account) {
+        // about
         if (exists(args.about)) {
           await authService.editAbout(args.about, sender, pool);
         }
+
+        // domain
         if (exists(args.domain)) {
           await authService.editDomain(args.domain, sender, pool);
         }
-        if (exists(args.adduser)) {
+
+        // link | unlink
+        if (exists(args.link)) {
+          await authService.addPermissions(
+            account.username,
+            args.link,
+            sender,
+            ["POST"],
+            pool
+          );
+        } else if (exists(args.unlink)) {
+          await authService.addPermissions(
+            account.username,
+            args.unlink,
+            sender,
+            ["POST"],
+            pool
+          );
         }
-        if (exists(args.deluser)) {
-        }
+
+        // enable | disable | destroy
         if (exists(args.enable)) {
           await authService.enable(sender, pool);
-        }
-        if (exists(args.disable)) {
+          return new Response(
+            `The user ${account.username} was disabled.`,
+            messageId
+          );
+        } else if (exists(args.disable)) {
           await authService.disable(sender, pool);
-        }
-        if (exists(args.destroy)) {
-          await authService.disable(sender, pool);
+          return new Response(
+            `The user ${account.username} was disabled.`,
+            messageId
+          );
+        } else if (exists(args.destroy)) {
+          try {
+            await authService.destroy(sender, pool);
+            return new Response(
+              `The user ${account.username} was deleted.`,
+              messageId
+            );
+          } catch (ex) {
+            const code = ex.message.split(/:|\(/)[0];
+            return new Response(
+              code === "CANNOT_DELETE_ACTIVE_ACCOUNT"
+                ? `As a security measure, the user needs to be disabled before deleting it. Say 'user disable'.`
+                : `Unable to delete the user ${account.username}.`,
+              messageId
+            );
+          }
         }
       } else {
         return new Response(

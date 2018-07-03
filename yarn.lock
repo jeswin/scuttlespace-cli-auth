@@ -244,9 +244,9 @@ scuttlespace-cli-common@^0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/scuttlespace-cli-common/-/scuttlespace-cli-common-0.0.1.tgz#b397ec0c9947a2efc1e716c748f95d0190b21afe"
 
-scuttlespace-service-auth@^0.0.7:
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/scuttlespace-service-auth/-/scuttlespace-service-auth-0.0.7.tgz#69c5b6b695af94acad6833393f32107f688e3f48"
+scuttlespace-service-auth@^0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/scuttlespace-service-auth/-/scuttlespace-service-auth-0.0.9.tgz#ac302f55fe481715b70f0685ef8cfa96e373738e"
   dependencies:
     "@types/node" "^10.3.2"
     "@types/pg" "^7.4.9"
