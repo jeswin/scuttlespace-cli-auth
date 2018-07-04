@@ -1,51 +1,54 @@
 import pg = require("pg");
+import { parseServiceResult, ServiceResult } from "scuttlespace-api-common";
 import { Response } from "scuttlespace-cli-common";
 import * as authServiceModule from "scuttlespace-service-auth";
 import { ICallContext } from "standard-api";
+import { IHostSettings } from ".";
 
 export default async function createOrRename(
   username: string,
   externalUsername: string,
+  messageId: string,
   pool: pg.Pool,
+  hostSettings: IHostSettings,
   context: ICallContext,
   authService: typeof authServiceModule
 ) {
   return isValidIdentity(username)
     ? await (async () => {
-        const accountResult = await authService.getAccountByExternalUsername(
-          externalUsername,
-          pool,
-          context
+        const account = await parseServiceResult(
+          authService.getAccountByExternalUsername(
+            externalUsername,
+            pool,
+            context
+          )
         );
 
-        const account = ensureValidResult(accountResult);
-
-        const statusResult = await authService.checkAccountStatus(
-          username,
-          externalUsername,
-          pool,
-          context
+        const status = await parseServiceResult(
+          authService.checkAccountStatus(
+            username,
+            externalUsername,
+            pool,
+            context
+          )
         );
-
-        const status = ensureValidResult(statusResult);
 
         // create
         return !account
           ? status.status === "AVAILABLE"
             ? await (async () => {
-                await authService.createAccount(
-                  {
-                    about: "",
-                    domain: "",
-                    enabled: true,
-                    externalUsername,
-                    username
-                  },
-                  pool,
-                  context
+                await parseServiceResult(
+                  authService.createOrRename(
+                    {
+                      externalUsername,
+                      username
+                    },
+                    pool,
+                    context
+                  )
                 );
                 return new Response(
-                  `The id '${username}' is now accessible at https://${
+                  `Your profile is accessible at https://${
                     hostSettings.hostname
                   }/${username}.`,
                   messageId

@@ -246,6 +246,12 @@ scuttlespace-api-common@^0.0.4:
   dependencies:
     standard-api "^0.0.2"
 
+scuttlespace-api-common@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/scuttlespace-api-common/-/scuttlespace-api-common-0.0.5.tgz#a70935f3512ba2508a9cd8152a889180724b133b"
+  dependencies:
+    standard-api "^0.0.2"
+
 scuttlespace-cli-common@^0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/scuttlespace-cli-common/-/scuttlespace-cli-common-0.0.1.tgz#b397ec0c9947a2efc1e716c748f95d0190b21afe"
