@@ -26,7 +26,9 @@ export default async function modify(
             [
               () => typeof args.enable !== "undefined",
               async () => {
-                await authService.enable(externalUsername, pool, context);
+                await parseServiceResult(
+                  authService.enable(externalUsername, pool, context)
+                );
                 return new Response(
                   `The user ${account.username} was disabled.`,
                   messageId
@@ -36,7 +38,9 @@ export default async function modify(
             [
               () => typeof args.disable !== "undefined",
               async () => {
-                await authService.disable(externalUsername, pool, context);
+                await parseServiceResult(
+                  authService.disable(externalUsername, pool, context)
+                );
                 return new Response(
                   `The user ${account.username} was disabled.`,
                   messageId
@@ -46,10 +50,8 @@ export default async function modify(
             [
               () => typeof args.destroy !== "undefined",
               async () => {
-                const result = await authService.destroy(
-                  externalUsername,
-                  pool,
-                  context
+                const result = await parseServiceResult(
+                  authService.destroy(externalUsername, pool, context)
                 );
 
                 try {
@@ -75,11 +77,13 @@ export default async function modify(
             [
               () => typeof args.about !== "undefined",
               async () => {
-                await authService.editAbout(
-                  args.about,
-                  externalUsername,
-                  pool,
-                  context
+                await parseServiceResult(
+                  authService.editAbout(
+                    args.about,
+                    externalUsername,
+                    pool,
+                    context
+                  )
                 );
                 return "about text";
               }
@@ -87,11 +91,13 @@ export default async function modify(
             [
               () => typeof args.domain !== "undefined",
               async () => {
-                await authService.editDomain(
-                  args.domain,
-                  externalUsername,
-                  pool,
-                  context
+                await parseServiceResult(
+                  authService.editDomain(
+                    args.domain,
+                    externalUsername,
+                    pool,
+                    context
+                  )
                 );
                 return "domain";
               }
@@ -107,13 +113,15 @@ export default async function modify(
             [
               () => typeof args.link !== "undefined",
               async () => {
-                await authService.addPermissions(
-                  account.username,
-                  args.link,
-                  externalUsername,
-                  ["POST"],
-                  pool,
-                  context
+                await parseServiceResult(
+                  authService.addPermissions(
+                    account.username,
+                    args.link,
+                    externalUsername,
+                    ["POST"],
+                    pool,
+                    context
+                  )
                 );
                 return new Response(``, messageId);
               }
@@ -121,13 +129,15 @@ export default async function modify(
             [
               () => typeof args.unlink !== undefined,
               async () => {
-                await authService.addPermissions(
-                  account.username,
-                  args.unlink,
-                  externalUsername,
-                  ["POST"],
-                  pool,
-                  context
+                await parseServiceResult(
+                  authService.addPermissions(
+                    account.username,
+                    args.unlink,
+                    externalUsername,
+                    ["POST"],
+                    pool,
+                    context
+                  )
                 );
                 return new Response(``, messageId);
               }

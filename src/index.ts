@@ -5,6 +5,7 @@ import * as authServiceModule from "scuttlespace-service-auth";
 import { ICallContext } from "standard-api";
 import createOrRename from "./create-or-rename";
 import modify from "./modify";
+import { Response } from "scuttlespace-cli-common/dist";
 /*
   Supported commands
   
@@ -55,18 +56,6 @@ const parser = humanist([
   ["destroy", "flag"]
 ]);
 
-function exists(x: any): boolean {
-  return typeof x !== "undefined";
-}
-
-function ensureValidResult<T>(result: ServiceResult<T>): T | never {
-  if (result.type === "data") {
-    return result.data;
-  } else {
-    throw new Error(result.error.toString());
-  }
-}
-
 export interface IHostSettings {
   hostname: string;
 }
@@ -84,25 +73,33 @@ export default async function handle(
   return lcaseCommand.startsWith("user ")
     ? await (async () => {
         const args: any = parser(command);
-        return args.id
-          ? await createOrRename(
-              args.id,
-              sender,
-              messageId,
-              pool,
-              hostSettings,
-              context,
-              authService
-            )
-          : await modify(
-              args.id,
-              sender,
-              messageId,
-              pool,
-              hostSettings,
-              context,
-              authService
-            );
+        try {
+          const resp = args.id
+            ? await createOrRename(
+                args.id,
+                sender,
+                messageId,
+                pool,
+                hostSettings,
+                context,
+                authService
+              )
+            : await modify(
+                args.id,
+                sender,
+                messageId,
+                pool,
+                hostSettings,
+                context,
+                authService
+              );
+          return resp;
+        } catch (ex) {
+          return new Response(
+            `Sorry that did not work, looks like an error at our end. We'll fix it.`,
+            messageId
+          );
+        }
       })()
     : undefined;
 }
