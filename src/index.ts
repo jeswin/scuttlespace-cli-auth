@@ -84,7 +84,25 @@ export default async function handle(
   return lcaseCommand.startsWith("user ")
     ? await (async () => {
         const args: any = parser(command);
-        return args.id ? await createOrRename() : await modify();
+        return args.id
+          ? await createOrRename(
+              args.id,
+              sender,
+              messageId,
+              pool,
+              hostSettings,
+              context,
+              authService
+            )
+          : await modify(
+              args.id,
+              sender,
+              messageId,
+              pool,
+              hostSettings,
+              context,
+              authService
+            );
       })()
     : undefined;
 }

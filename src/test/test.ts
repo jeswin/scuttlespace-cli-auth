@@ -14,11 +14,12 @@ describe("scuttlespace-cli-auth", () => {
       auth: {} as any
     });
 
-    const resp = authCLI(
+    const resp = await authCLI(
       "user id jeswin",
       "msg-id",
       "sender-id",
       mockDbPool,
+      { hostname: "example.com" },
       mockContext
     );
 

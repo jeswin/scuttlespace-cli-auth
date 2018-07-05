@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "author": "Jeswin Kumar<jeswinpk@agilehead.com>",
   "main": "dist/index",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "./build.sh",
     "test": "./build.sh && mocha dist/test/test.js"
@@ -13,7 +14,8 @@
     "scuttlespace-api-common": "^0.0.5",
     "scuttlespace-cli-common": "^0.0.1",
     "scuttlespace-service-auth": "^0.0.16",
-    "standard-api": "^0.0.2"
+    "standard-api": "^0.0.2",
+    "switch-expr": "^0.0.1"
   },
   "devDependencies": {
     "@types/mocha": "^5.2.0",
