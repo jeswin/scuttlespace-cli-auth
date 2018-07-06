@@ -120,7 +120,6 @@ export default async function modify(
           async () => {
             const { username } = await parseServiceResult(
               authService.addPermissions(
-                username,
                 args.unlink,
                 externalUsername,
                 ["POST"],
