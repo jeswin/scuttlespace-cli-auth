@@ -95,6 +95,7 @@ export default async function handle(
               );
           return resp;
         } catch (ex) {
+          console.log(ex);
           return new Response(
             `Sorry that did not work, looks like an error at our end. We'll fix it.`,
             messageId
