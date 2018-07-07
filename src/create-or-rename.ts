@@ -11,7 +11,7 @@ import exception from "./exception";
 
 export default async function createOrRename(
   username: string,
-  externalUsername: string,
+  externalId: string,
   messageId: string,
   pool: pg.Pool,
   hostSettings: IHostSettings,
@@ -20,9 +20,9 @@ export default async function createOrRename(
 ) {
   try {
     const result = await parseServiceResult(
-      authService.createOrRename(
+      authService.createOrRenameAccount(
         {
-          externalUsername,
+          externalId,
           username
         },
         pool,

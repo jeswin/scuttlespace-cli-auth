@@ -1,30 +1,23 @@
 import humanist from "humanist";
 import pg = require("pg");
-import { ServiceResult } from "scuttlespace-api-common";
+import { Response } from "scuttlespace-cli-common";
 import * as authServiceModule from "scuttlespace-service-auth";
 import { ICallContext } from "standard-api";
 import createOrRename from "./create-or-rename";
 import modify from "./modify";
-import { Response } from "scuttlespace-cli-common/dist";
 /*
   Supported commands
   
-  A given externalUsername can have multiple usernames associated with it, one of which will be in is_primary state.
+  A given externalId can have multiple usernames associated with it, one of which will be in is_primary state.
 
   Account Management
   ------------------
-  # Creates a new identity, owned by the externalUsername's pkey
+  # Creates a new identity, owned by the externalId's pkey
   # If the identity already exists, sets it as active.
   user id jeswin 
 
   # Sets some text about the current user
   user about Lives in a cold, dark cave.
-
-  # Gives another user access to the identity
-  user link alice
-
-  # Disassociate a user from the identity
-  user delink alice
 
   # Sets custom domain for username
   user domain jeswin.org
@@ -85,7 +78,7 @@ export default async function handle(
                 authService
               )
             : await modify(
-                args.id,
+                args,
                 sender,
                 messageId,
                 pool,
@@ -95,7 +88,6 @@ export default async function handle(
               );
           return resp;
         } catch (ex) {
-          console.log(ex);
           return new Response(
             `Sorry that did not work, looks like an error at our end. We'll fix it.`,
             messageId

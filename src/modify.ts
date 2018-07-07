@@ -8,7 +8,7 @@ import { IHostSettings } from ".";
 
 export default async function modify(
   args: any,
-  externalUsername: string,
+  externalId: string,
   messageId: string,
   pool: pg.Pool,
   hostSettings: IHostSettings,
@@ -22,7 +22,7 @@ export default async function modify(
           () => typeof args.enable !== "undefined",
           async () => {
             const { username } = await parseServiceResult(
-              authService.enable(externalUsername, pool, context)
+              authService.enableAccount(externalId, pool, context)
             );
             return new Response(
               `The user ${username} has been enabled.`,
@@ -34,10 +34,10 @@ export default async function modify(
           () => typeof args.disable !== "undefined",
           async () => {
             const { username } = await parseServiceResult(
-              authService.disable(externalUsername, pool, context)
+              authService.disableAccount(externalId, pool, context)
             );
             return new Response(
-              `The user ${username} was disabled.`,
+              `The user ${username} has been disabled.`,
               messageId
             );
           }
@@ -47,18 +47,17 @@ export default async function modify(
           async () => {
             try {
               const { username } = await parseServiceResult(
-                authService.destroy(externalUsername, pool, context)
+                authService.destroyAccount(externalId, pool, context)
               );
 
               return new Response(
-                `The user ${username} was deleted.`,
+                `The user ${username} has been deleted.`,
                 messageId
               );
             } catch (ex) {
-              const code = ex.message.split(/:|\(/)[0];
               return new Response(
-                code === "CANNOT_DELETE_ACTIVE_ACCOUNT"
-                  ? `As a security measure, the user needs to be disabled before deleting it. Say 'user disable'.`
+                ex.code === "CANNOT_DELETE_ACTIVE_ACCOUNT"
+                  ? `As a safety measure, the user needs to be disabled before deleting it. Say 'user disable'.`
                   : `Unable to delete the user.`,
                 messageId
               );
@@ -73,7 +72,7 @@ export default async function modify(
           () => typeof args.about !== "undefined",
           async () => {
             const { username } = await parseServiceResult(
-              authService.editAbout(args.about, externalUsername, pool, context)
+              authService.editAccountAbout(args.about, externalId, pool, context)
             );
             return "about text";
           }
@@ -82,9 +81,9 @@ export default async function modify(
           () => typeof args.domain !== "undefined",
           async () => {
             const { username } = await parseServiceResult(
-              authService.editDomain(
+              authService.editAccountDomain(
                 args.domain,
-                externalUsername,
+                externalId,
                 pool,
                 context
               )
@@ -98,44 +97,9 @@ export default async function modify(
         : undefined;
     };
 
-    const accountPermissionExpressions = async () =>
-      await expr.firstAsync([
-        [
-          () => typeof args.link !== "undefined",
-          async () => {
-            const { username } = await parseServiceResult(
-              authService.addPermissions(
-                args.link,
-                externalUsername,
-                ["POST"],
-                pool,
-                context
-              )
-            );
-            return new Response(``, messageId);
-          }
-        ],
-        [
-          () => typeof args.unlink !== undefined,
-          async () => {
-            const { username } = await parseServiceResult(
-              authService.addPermissions(
-                args.unlink,
-                externalUsername,
-                ["POST"],
-                pool,
-                context
-              )
-            );
-            return new Response(``, messageId);
-          }
-        ]
-      ]);
-
     return (
       (await accountCreationExpressions()) ||
       (await accountModExpressions()) ||
-      (await accountPermissionExpressions()) ||
       new Response(`Sorry, did not follow that instruction.`, messageId)
     );
   } catch (ex) {}

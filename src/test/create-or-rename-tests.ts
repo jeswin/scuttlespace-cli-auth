@@ -1,7 +1,7 @@
 import "mocha";
 import { ValidResult } from "scuttlespace-api-common";
 import * as authService from "scuttlespace-service-auth";
-import { CreateOrRenameResult } from "scuttlespace-service-auth/dist/create-account";
+import { CreateOrRenameAccountResult } from "scuttlespace-service-auth";
 import "should";
 import authCLI from "../";
 import { inject } from "../";
@@ -17,8 +17,8 @@ export default function() {
       inject({
         auth: {
           ...authService,
-          createOrRename: async () =>
-            new ValidResult(CreateOrRenameResult.Created)
+          createOrRenameAccount: async () =>
+            new ValidResult(CreateOrRenameAccountResult.Created)
         }
       });
 
@@ -43,8 +43,8 @@ export default function() {
       inject({
         auth: {
           ...authService,
-          createOrRename: async () =>
-            new ValidResult(CreateOrRenameResult.Renamed)
+          createOrRenameAccount: async () =>
+            new ValidResult(CreateOrRenameAccountResult.Renamed)
         }
       });
 
@@ -69,8 +69,8 @@ export default function() {
       inject({
         auth: {
           ...authService,
-          createOrRename: async () =>
-            new ValidResult(CreateOrRenameResult.Taken)
+          createOrRenameAccount: async () =>
+            new ValidResult(CreateOrRenameAccountResult.Taken)
         }
       });
 
@@ -95,7 +95,8 @@ export default function() {
       inject({
         auth: {
           ...authService,
-          createOrRename: async () => new ValidResult(CreateOrRenameResult.Own)
+          createOrRenameAccount: async () =>
+            new ValidResult(CreateOrRenameAccountResult.Own)
         }
       });
 

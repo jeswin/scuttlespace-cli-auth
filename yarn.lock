@@ -240,12 +240,6 @@ psychopiggy@^0.0.2:
     pg "^7.4.3"
     pg-params "^0.0.6"
 
-scuttlespace-api-common@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/scuttlespace-api-common/-/scuttlespace-api-common-0.0.4.tgz#daedb48e3c07501b81d321c646173bf8801f3b84"
-  dependencies:
-    standard-api "^0.0.2"
-
 scuttlespace-api-common@^0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/scuttlespace-api-common/-/scuttlespace-api-common-0.0.5.tgz#a70935f3512ba2508a9cd8152a889180724b133b"
@@ -256,15 +250,15 @@ scuttlespace-cli-common@^0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/scuttlespace-cli-common/-/scuttlespace-cli-common-0.0.1.tgz#b397ec0c9947a2efc1e716c748f95d0190b21afe"
 
-scuttlespace-service-auth@^0.0.18:
-  version "0.0.18"
-  resolved "https://registry.yarnpkg.com/scuttlespace-service-auth/-/scuttlespace-service-auth-0.0.18.tgz#191333edb5df1218d258e670440a7db3ae89f277"
+scuttlespace-service-auth@^0.0.23:
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/scuttlespace-service-auth/-/scuttlespace-service-auth-0.0.23.tgz#0af762161a9dbd8b3bc268a68f2f87d2b71d7278"
   dependencies:
     "@types/node" "^10.3.2"
     "@types/pg" "^7.4.9"
     pg "^7.4.3"
     psychopiggy "^0.0.2"
-    scuttlespace-api-common "^0.0.4"
+    scuttlespace-api-common "^0.0.5"
 
 semver@4.3.2:
   version "4.3.2"

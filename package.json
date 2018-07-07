@@ -13,7 +13,7 @@
     "humanist": "^0.0.4",
     "scuttlespace-api-common": "^0.0.5",
     "scuttlespace-cli-common": "^0.0.1",
-    "scuttlespace-service-auth": "^0.0.18",
+    "scuttlespace-service-auth": "^0.0.23",
     "standard-api": "^0.0.2",
     "switch-expr": "^0.0.1"
   },
