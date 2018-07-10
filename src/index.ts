@@ -60,7 +60,7 @@ export default async function handle(
   pool: pg.Pool,
   hostSettings: IHostSettings,
   context: ICallContext
-) {
+) : Promise<Response | undefined> {
   const lcaseCommand = command.toLowerCase();
 
   return lcaseCommand.startsWith("user ")
