@@ -1,6 +1,6 @@
 {
   "name": "scuttlespace-cli-auth",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Jeswin Kumar<jeswinpk@agilehead.com>",
   "main": "dist/index",
   "types": "dist/index.d.ts",
@@ -13,9 +13,9 @@
     "@types/pg": "^7.4.10",
     "humanist": "^0.0.4",
     "pg": "^7.4.3",
-    "scuttlespace-api-common": "^0.0.5",
+    "scuttlespace-api-common": "^0.0.6",
     "scuttlespace-cli-common": "^0.0.1",
-    "scuttlespace-service-auth": "^0.0.23",
+    "scuttlespace-service-auth": "^0.0.25",
     "standard-api": "^0.0.2",
     "switch-expr": "^0.0.1"
   },

@@ -3,7 +3,7 @@ import {
   parseServiceResult,
   ServiceResultParseError
 } from "scuttlespace-api-common";
-import { Response } from "scuttlespace-cli-common";
+import { Response } from "scuttlespace-cli-common/dist";
 import * as authServiceModule from "scuttlespace-service-auth";
 import { ICallContext } from "standard-api";
 import { IHostSettings } from ".";
@@ -13,7 +13,6 @@ export default async function createOrRename(
   username: string,
   externalId: string,
   messageId: string,
-  pool: pg.Pool,
   hostSettings: IHostSettings,
   context: ICallContext,
   authService: typeof authServiceModule
@@ -25,7 +24,6 @@ export default async function createOrRename(
           externalId,
           username
         },
-        pool,
         context
       )
     );

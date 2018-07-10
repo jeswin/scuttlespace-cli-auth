@@ -3,8 +3,8 @@ import { ValidResult } from "scuttlespace-api-common";
 import * as authService from "scuttlespace-service-auth";
 import { CreateOrRenameAccountResult } from "scuttlespace-service-auth";
 import "should";
-import authCLI from "../";
-import { inject } from "../";
+import * as authCLI from "..";
+import { inject } from "..";
 
 const shouldLib = require("should");
 
@@ -22,7 +22,7 @@ export default function() {
         }
       });
 
-      const resp = await authCLI(
+      const resp = await authCLI.handle(
         "user id jeswin",
         "msg-id",
         "jpk001",
@@ -48,7 +48,7 @@ export default function() {
         }
       });
 
-      const resp = await authCLI(
+      const resp = await authCLI.handle(
         "user id jeswin",
         "msg-id",
         "jpk001",
@@ -74,7 +74,7 @@ export default function() {
         }
       });
 
-      const resp = await authCLI(
+      const resp = await authCLI.handle(
         "user id jeswin",
         "msg-id",
         "jpk001",
@@ -100,7 +100,7 @@ export default function() {
         }
       });
 
-      const resp = await authCLI(
+      const resp = await authCLI.handle(
         "user id jeswin",
         "msg-id",
         "jpk001",

@@ -1,6 +1,6 @@
 import pg = require("pg");
 import { parseServiceResult } from "scuttlespace-api-common";
-import { Response } from "scuttlespace-cli-common";
+import { Response } from "scuttlespace-cli-common/dist";
 import * as authServiceModule from "scuttlespace-service-auth";
 import { ICallContext } from "standard-api";
 import * as expr from "switch-expr";
@@ -10,7 +10,6 @@ export default async function modify(
   args: any,
   externalId: string,
   messageId: string,
-  pool: pg.Pool,
   hostSettings: IHostSettings,
   context: ICallContext,
   authService: typeof authServiceModule
@@ -22,7 +21,7 @@ export default async function modify(
           () => typeof args.enable !== "undefined",
           async () => {
             const { username } = await parseServiceResult(
-              authService.enableAccount(externalId, pool, context)
+              authService.enableAccount(externalId, context)
             );
             return new Response(
               `The user ${username} has been enabled.`,
@@ -34,7 +33,7 @@ export default async function modify(
           () => typeof args.disable !== "undefined",
           async () => {
             const { username } = await parseServiceResult(
-              authService.disableAccount(externalId, pool, context)
+              authService.disableAccount(externalId, context)
             );
             return new Response(
               `The user ${username} has been disabled.`,
@@ -47,7 +46,7 @@ export default async function modify(
           async () => {
             try {
               const { username } = await parseServiceResult(
-                authService.destroyAccount(externalId, pool, context)
+                authService.destroyAccount(externalId, context)
               );
 
               return new Response(
@@ -72,7 +71,7 @@ export default async function modify(
           () => typeof args.about !== "undefined",
           async () => {
             const { username } = await parseServiceResult(
-              authService.editAccountAbout(args.about, externalId, pool, context)
+              authService.editAccountAbout(args.about, externalId, context)
             );
             return "about text";
           }
@@ -81,12 +80,7 @@ export default async function modify(
           () => typeof args.domain !== "undefined",
           async () => {
             const { username } = await parseServiceResult(
-              authService.editAccountDomain(
-                args.domain,
-                externalId,
-                pool,
-                context
-              )
+              authService.editAccountDomain(args.domain, externalId, context)
             );
             return "domain";
           }

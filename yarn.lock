@@ -246,6 +246,14 @@ scuttlespace-api-common@^0.0.5:
   dependencies:
     standard-api "^0.0.2"
 
+scuttlespace-api-common@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/scuttlespace-api-common/-/scuttlespace-api-common-0.0.6.tgz#efd4744337e278ab136b2bc3ed0d42386246de3e"
+  dependencies:
+    scuttlespace-api-common "^0.0.5"
+    scuttlespace-service-auth "^0.0.23"
+    standard-api "^0.0.2"
+
 scuttlespace-cli-common@^0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/scuttlespace-cli-common/-/scuttlespace-cli-common-0.0.1.tgz#b397ec0c9947a2efc1e716c748f95d0190b21afe"
@@ -253,6 +261,16 @@ scuttlespace-cli-common@^0.0.1:
 scuttlespace-service-auth@^0.0.23:
   version "0.0.23"
   resolved "https://registry.yarnpkg.com/scuttlespace-service-auth/-/scuttlespace-service-auth-0.0.23.tgz#0af762161a9dbd8b3bc268a68f2f87d2b71d7278"
+  dependencies:
+    "@types/node" "^10.3.2"
+    "@types/pg" "^7.4.9"
+    pg "^7.4.3"
+    psychopiggy "^0.0.2"
+    scuttlespace-api-common "^0.0.5"
+
+scuttlespace-service-auth@^0.0.25:
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/scuttlespace-service-auth/-/scuttlespace-service-auth-0.0.25.tgz#a7300fc9d245d896e9161beb1fc6bca32b9894f5"
   dependencies:
     "@types/node" "^10.3.2"
     "@types/pg" "^7.4.9"
