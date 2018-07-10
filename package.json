@@ -10,7 +10,9 @@
   },
   "license": "AGPL-1.0",
   "dependencies": {
+    "@types/pg": "^7.4.10",
     "humanist": "^0.0.4",
+    "pg": "^7.4.3",
     "scuttlespace-api-common": "^0.0.5",
     "scuttlespace-cli-common": "^0.0.1",
     "scuttlespace-service-auth": "^0.0.23",
