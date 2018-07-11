@@ -1,6 +1,6 @@
 {
   "name": "scuttlespace-cli-auth",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Jeswin Kumar<jeswinpk@agilehead.com>",
   "main": "dist/index",
   "types": "dist/index.d.ts",

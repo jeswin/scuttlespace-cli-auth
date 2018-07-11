@@ -8,7 +8,6 @@ import { inject } from "..";
 
 const shouldLib = require("should");
 
-const mockDbPool: any = {};
 const mockContext = { id: "context-id" };
 
 export default function() {
@@ -26,7 +25,6 @@ export default function() {
         "user id jeswin",
         "msg-id",
         "jpk001",
-        mockDbPool,
         { hostname: "example.com" },
         mockContext
       );
@@ -52,7 +50,6 @@ export default function() {
         "user id jeswin",
         "msg-id",
         "jpk001",
-        mockDbPool,
         { hostname: "example.com" },
         mockContext
       );
@@ -78,7 +75,6 @@ export default function() {
         "user id jeswin",
         "msg-id",
         "jpk001",
-        mockDbPool,
         { hostname: "example.com" },
         mockContext
       );
@@ -104,7 +100,6 @@ export default function() {
         "user id jeswin",
         "msg-id",
         "jpk001",
-        mockDbPool,
         { hostname: "example.com" },
         mockContext
       );

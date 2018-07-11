@@ -62,7 +62,6 @@ export async function handle(
   command: string,
   messageId: string,
   sender: string,
-  pool: pg.Pool,
   hostSettings: IHostSettings,
   context: ICallContext
 ): Promise<Response | undefined> {

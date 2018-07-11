@@ -1,5 +1,5 @@
 import "mocha";
-import { ValidResult, ErrorResult } from "scuttlespace-api-common";
+import { ErrorResult, ValidResult } from "scuttlespace-api-common";
 import * as authService from "scuttlespace-service-auth";
 import "should";
 import * as authCLI from "..";
@@ -7,7 +7,6 @@ import { inject } from "..";
 
 const shouldLib = require("should");
 
-const mockDbPool: any = {};
 const mockContext = { id: "context-id" };
 
 export default function() {
@@ -24,7 +23,6 @@ export default function() {
         "user enable",
         "msg-id",
         "jpk001",
-        mockDbPool,
         { hostname: "example.com" },
         mockContext
       );
@@ -47,7 +45,6 @@ export default function() {
         "user disable",
         "msg-id",
         "jpk001",
-        mockDbPool,
         { hostname: "example.com" },
         mockContext
       );
@@ -70,7 +67,6 @@ export default function() {
         "user destroy",
         "msg-id",
         "jpk001",
-        mockDbPool,
         { hostname: "example.com" },
         mockContext
       );
@@ -97,7 +93,6 @@ export default function() {
         "user destroy",
         "msg-id",
         "jpk001",
-        mockDbPool,
         { hostname: "example.com" },
         mockContext
       );
