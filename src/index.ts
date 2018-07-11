@@ -54,9 +54,7 @@ export interface IHostSettings {
   hostname: string;
 }
 
-export async function init(dbConfig: IDbConfig) {
-  await authService.init(dbConfig);
-}
+export async function init() {}
 
 export async function handle(
   command: string,
