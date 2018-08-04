@@ -2,7 +2,7 @@ import humanist from "humanist";
 import pg = require("pg");
 import { IDbConfig } from "scuttlespace-api-common";
 import { Response } from "scuttlespace-cli-common/dist";
-import * as authServiceModule from "scuttlespace-service-auth";
+import * as authServiceModule from "scuttlespace-service-user";
 import { ICallContext } from "standard-api";
 import createOrRename from "./create-or-rename";
 import modify from "./modify";

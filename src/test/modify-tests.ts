@@ -1,6 +1,6 @@
 import "mocha";
 import { ErrorResult, ValidResult } from "scuttlespace-api-common";
-import * as authService from "scuttlespace-service-auth";
+import * as authService from "scuttlespace-service-user";
 import "should";
 import * as authCLI from "..";
 import { inject } from "..";
