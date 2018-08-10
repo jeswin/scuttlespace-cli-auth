@@ -1,8 +1,5 @@
 import humanist from "humanist";
-import pg = require("pg");
-import { IDbConfig } from "scuttlespace-api-common";
-import { Response } from "scuttlespace-cli-common/dist";
-import * as authServiceModule from "scuttlespace-service-user";
+import { IConfig, Response } from "scuttlespace-commands-common";
 import { ICallContext } from "standard-api";
 import createOrRename from "./create-or-rename";
 import modify from "./modify";
@@ -33,12 +30,6 @@ import modify from "./modify";
   user destroy 
 */
 
-let authService: typeof authServiceModule = authServiceModule;
-
-export function inject(mods: { auth: typeof authServiceModule }) {
-  authService = mods.auth;
-}
-
 const parser = humanist([
   ["id", "single"],
   ["about", "multi", { join: true }],
@@ -51,7 +42,8 @@ const parser = humanist([
 ]);
 
 export interface IHostSettings {
-  hostname: string;
+  graphqlHost: string;
+  graphqlPort: number;
 }
 
 export async function init() {}
@@ -60,7 +52,7 @@ export async function handle(
   command: string,
   messageId: string,
   sender: string,
-  hostSettings: IHostSettings,
+  config: IConfig,
   context: ICallContext
 ): Promise<Response | undefined> {
   const lcaseCommand = command.toLowerCase();
@@ -75,17 +67,9 @@ export async function handle(
                 sender,
                 messageId,
                 hostSettings,
-                context,
-                authService
+                context
               )
-            : await modify(
-                args,
-                sender,
-                messageId,
-                hostSettings,
-                context,
-                authService
-              );
+            : await modify(args, sender, messageId, hostSettings, context);
           return resp;
         } catch (ex) {
           return new Response(

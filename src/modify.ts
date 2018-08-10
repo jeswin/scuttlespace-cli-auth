@@ -1,7 +1,6 @@
 import pg = require("pg");
 import { parseServiceResult } from "scuttlespace-api-common";
-import { Response } from "scuttlespace-cli-common/dist";
-import * as authServiceModule from "scuttlespace-service-auth";
+import { Response } from "scuttlespace-cli-common";
 import { ICallContext } from "standard-api";
 import * as expr from "switch-expr";
 import { IHostSettings } from ".";
@@ -11,8 +10,7 @@ export default async function modify(
   externalId: string,
   messageId: string,
   hostSettings: IHostSettings,
-  context: ICallContext,
-  authService: typeof authServiceModule
+  context: ICallContext
 ) {
   try {
     const accountCreationExpressions = async () =>

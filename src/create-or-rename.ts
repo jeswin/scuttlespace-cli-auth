@@ -3,8 +3,7 @@ import {
   parseServiceResult,
   ServiceResultParseError
 } from "scuttlespace-api-common";
-import { Response } from "scuttlespace-cli-common/dist";
-import * as authServiceModule from "scuttlespace-service-auth";
+import { Response } from "scuttlespace-cli-common";
 import { ICallContext } from "standard-api";
 import { IHostSettings } from ".";
 import exception from "./exception";
@@ -15,7 +14,6 @@ export default async function createOrRename(
   messageId: string,
   hostSettings: IHostSettings,
   context: ICallContext,
-  authService: typeof authServiceModule
 ) {
   try {
     const result = await parseServiceResult(
