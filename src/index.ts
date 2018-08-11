@@ -41,11 +41,6 @@ const parser = humanist([
   ["destroy", "flag"]
 ]);
 
-export interface IHostSettings {
-  graphqlHost: string;
-  graphqlPort: number;
-}
-
 export async function init() {}
 
 export async function handle(
@@ -66,10 +61,10 @@ export async function handle(
                 args.id,
                 sender,
                 messageId,
-                hostSettings,
+                config,
                 context
               )
-            : await modify(args, sender, messageId, hostSettings, context);
+            : await modify(args, sender, messageId, config, context);
           return resp;
         } catch (ex) {
           return new Response(
