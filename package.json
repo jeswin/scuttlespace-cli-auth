@@ -1,5 +1,5 @@
 {
-  "name": "scuttlespace-cli-user",
+  "name": "scuttlespace-commands-user",
   "version": "0.0.5",
   "author": "Jeswin Kumar<jeswinpk@agilehead.com>",
   "main": "dist/index",
