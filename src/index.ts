@@ -1,5 +1,10 @@
 import humanist from "humanist";
-import { IConfig, Response } from "scuttlespace-commands-common";
+import {
+  IConfig,
+  IMessage,
+  IMessageSource,
+  Response
+} from "scuttlespace-commands-common";
 import { ICallContext } from "standard-api";
 import createOrRename from "./create-or-rename";
 import modify from "./modify";
@@ -41,15 +46,14 @@ const parser = humanist([
   ["destroy", "flag"]
 ]);
 
-export async function init() {}
+export async function init(config: IConfig) {}
 
 export async function handle(
-  command: string,
-  messageId: string,
-  sender: string,
-  config: IConfig,
+  msg: IMessage<any>,
+  msgSource: IMessageSource,
   context: ICallContext
 ): Promise<Response | undefined> {
+  const command = "TODO";
   const lcaseCommand = command.toLowerCase();
 
   return lcaseCommand.startsWith("user ")
@@ -57,13 +61,7 @@ export async function handle(
         const args: any = parser(command);
         try {
           const resp = args.id
-            ? await createOrRename(
-                args.id,
-                sender,
-                messageId,
-                config,
-                context
-              )
+            ? await createOrRename(args.id, sender, messageId, config, context)
             : await modify(args, sender, messageId, config, context);
           return resp;
         } catch (ex) {
