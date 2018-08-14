@@ -1,5 +1,6 @@
 import humanist from "humanist";
 import {
+  extractText,
   IConfig,
   IMessage,
   IMessageSource,
@@ -46,30 +47,34 @@ const parser = humanist([
   ["destroy", "flag"]
 ]);
 
-export async function init(config: IConfig) {}
+export async function init(configVal: IConfig) {}
 
 export async function handle(
   msg: IMessage<any>,
   msgSource: IMessageSource,
+  config: IConfig,
   context: ICallContext
 ): Promise<Response | undefined> {
-  const command = "TODO";
-  const lcaseCommand = command.toLowerCase();
-
-  return lcaseCommand.startsWith("user ")
-    ? await (async () => {
-        const args: any = parser(command);
-        try {
-          const resp = args.id
-            ? await createOrRename(args.id, sender, messageId, config, context)
-            : await modify(args, sender, messageId, config, context);
-          return resp;
-        } catch (ex) {
-          return new Response(
-            `Sorry that did not work, looks like an error at our end. We'll fix it.`,
-            messageId
-          );
-        }
-      })()
-    : undefined;
+  // Right now we only handle simple text messages.
+  if (msg.type === "post") {
+    const command = extractText(msg, config.botMention);
+    if (command) {
+      const lcaseCommand = command.toLowerCase();
+      return lcaseCommand.startsWith("user ")
+        ? await (async () => {
+            const args: any = parser(command);
+            try {
+              return createOrRename(args) || modify(args);
+            } catch (ex) {
+              return new Response(
+                `Sorry that did not work, looks like an error at our end. We'll fix it.`,
+                msg.key
+              );
+            }
+          })()
+        : undefined;
+    }
+  } else {
+    return undefined;
+  }
 }
