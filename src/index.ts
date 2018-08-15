@@ -1,3 +1,4 @@
+import ApolloClient from "apollo-client";
 import humanist from "humanist";
 import {
   extractText,
@@ -7,7 +8,7 @@ import {
   Response
 } from "scuttlespace-commands-common";
 import { ICallContext } from "standard-api";
-import createOrRename from "./create-or-rename";
+import createOrRename from "./createOrRename";
 import modify from "./modify";
 /*
   Supported commands
@@ -53,6 +54,9 @@ export async function handle(
   msg: IMessage<any>,
   msgSource: IMessageSource,
   config: IConfig,
+  opts: {
+    apolloClient: ApolloClient<any>;
+  },
   context: ICallContext
 ): Promise<Response | undefined> {
   // Right now we only handle simple text messages.
@@ -64,7 +68,10 @@ export async function handle(
         ? await (async () => {
             const args: any = parser(command);
             try {
-              return createOrRename(args) || modify(args);
+              return (
+                createOrRename(msg, args, config, context, opts.apolloClient) ||
+                modify(msg, args, config, context, opts.apolloClient)
+              );
             } catch (ex) {
               return new Response(
                 `Sorry that did not work, looks like an error at our end. We'll fix it.`,

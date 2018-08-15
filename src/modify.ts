@@ -1,18 +1,22 @@
-import pg = require("pg");
-import { parseServiceResult } from "scuttlespace-api-common";
-import { IConfig, Response } from "scuttlespace-commands-common";
+import { ApolloClient } from "apollo-client";
+import gql from "graphql-tag";
+import {
+  parseServiceResult,
+  ServiceResultParseError
+} from "scuttlespace-api-common";
+import { IConfig, IMessage, Response } from "scuttlespace-commands-common";
 import { ICallContext } from "standard-api";
-import * as expr from "switch-expr";
+import exception from "./exception";
 
 export default async function modify(
   args: any,
-  externalId: string,
-  messageId: string,
+  msg: IMessage<{ text: string }>,
   config: IConfig,
-  context: ICallContext
+  context: ICallContext,
+  apolloClient: ApolloClient<any>
 ) {
   return new Response(`TODO.`, messageId);
-  
+
   // try {
   //   const accountCreationExpressions = async () =>
   //     await expr.firstAsync([

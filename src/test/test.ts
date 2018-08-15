@@ -1,5 +1,5 @@
-import createOrRenameTests from "./create-or-rename-tests";
-import modifyTests from "./modify-tests";
+import createOrRenameTests from "./createOrRenameTests";
+import modifyTests from "./modifyTests";
 
 describe("scuttlespace-cli-auth", () => {
   createOrRenameTests();
