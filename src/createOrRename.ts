@@ -7,6 +7,7 @@ import {
 import { IConfig, IMessage, Response } from "scuttlespace-commands-common";
 import { ICallContext } from "standard-api";
 import exception from "./exception";
+import queries from "./queries";
 
 export default async function createOrRename(
   args: any,
@@ -22,11 +23,7 @@ export default async function createOrRename(
         const messageId = msg.key;
 
         const result: any = await apolloClient.mutate({
-          mutation: gql`
-            mutation createOrRenameUserMutation($args: CreateOrRenameUserArgs) {
-              createOrRenameUser(input: $args)
-            }
-          `,
+          mutation: gql(queries.createOrRenameUserMutation),
           variables: {
             externalId,
             username

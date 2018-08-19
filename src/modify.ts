@@ -1,10 +1,10 @@
 import { ApolloClient } from "apollo-client";
 import gql from "graphql-tag";
+import { IConfig, IMessage, Response } from "scuttlespace-commands-common";
 import {
   parseServiceResult,
   ServiceResultParseError
-} from "scuttlespace-api-common";
-import { IConfig, IMessage, Response } from "scuttlespace-commands-common";
+} from "scuttlespace-service-common";
 import { ICallContext } from "standard-api";
 import exception from "./exception";
 
