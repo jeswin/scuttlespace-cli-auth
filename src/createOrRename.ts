@@ -3,7 +3,7 @@ import gql from "graphql-tag";
 import {
   parseServiceResult,
   ServiceResultParseError
-} from "scuttlespace-api-common";
+} from "scuttlespace-service-common";
 import { IConfig, IMessage, Response } from "scuttlespace-commands-common";
 import { ICallContext } from "standard-api";
 import exception from "./exception";
