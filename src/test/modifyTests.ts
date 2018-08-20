@@ -1,5 +1,5 @@
 import "mocha";
-import { ErrorResult, ValidResult } from "scuttlespace-api-common";
+import { ErrorResult, ValidResult } from "scuttlespace-service-common";
 import "should";
 import * as authCLI from "..";
 

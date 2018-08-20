@@ -52,6 +52,7 @@ export async function init(configVal: IConfig) {}
 
 export async function handle(
   msg: IMessage<any>,
+  pub: string,
   msgSource: IMessageSource,
   config: IConfig,
   opts: {
@@ -69,8 +70,14 @@ export async function handle(
             const args: any = parser(command);
             try {
               return (
-                createOrRename(msg, args, config, context, opts.apolloClient) ||
-                modify(msg, args, config, context, opts.apolloClient)
+                createOrRename(
+                  args,
+                  msg,
+                  pub,
+                  config,
+                  context,
+                  opts.apolloClient
+                ) || modify(args, msg, pub, config, context, opts.apolloClient)
               );
             } catch (ex) {
               return new Response(

@@ -11,11 +11,12 @@ import exception from "./exception";
 export default async function modify(
   args: any,
   msg: IMessage<{ text: string }>,
+  pub: string,
   config: IConfig,
   context: ICallContext,
   apolloClient: ApolloClient<any>
 ) {
-  return new Response(`TODO.`, messageId);
+  return new Response(`TODO.`, msg.key);
 
   // try {
   //   const accountCreationExpressions = async () =>

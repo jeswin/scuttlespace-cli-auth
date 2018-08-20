@@ -1,17 +1,19 @@
 import { ApolloClient } from "apollo-client";
 import gql from "graphql-tag";
+import { IConfig, IMessage, Response } from "scuttlespace-commands-common";
 import {
   parseServiceResult,
   ServiceResultParseError
 } from "scuttlespace-service-common";
-import { IConfig, IMessage, Response } from "scuttlespace-commands-common";
 import { ICallContext } from "standard-api";
 import exception from "./exception";
 import queries from "./queries";
+import { invokeCreateOrRenameUser } from "./schemaTypes";
 
 export default async function createOrRename(
   args: any,
   msg: IMessage<{ text: string }>,
+  pub: string,
   config: IConfig,
   context: ICallContext,
   apolloClient: ApolloClient<any>
@@ -19,16 +21,19 @@ export default async function createOrRename(
   return args.id
     ? await (async () => {
         const externalId = msg.author;
-        const username = args.id;
+        const username: string = args.id;
         const messageId = msg.key;
 
-        const result: any = await apolloClient.mutate({
-          mutation: gql(queries.createOrRenameUserMutation),
-          variables: {
-            externalId,
-            username
-          }
-        });
+        const result = invokeCreateOrRenameUser(
+          {
+            args: {
+              externalId,
+              pub,
+              username
+            }
+          },
+          apolloClient
+        );
 
         return !result.errors
           ? await (async () => {

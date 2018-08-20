@@ -1,5 +1,7 @@
 export default {
-  createOrRenameUserMutation: `mutation createOrRenameUserMutation($args: CreateOrRenameUserArgs) {
-    createOrRenameUser(input: $args)
-  }`
+  mutations: {
+    createOrRenameUser: `mutation CreateOrRenameUser($args: CreateOrRenameUserArgs) {
+      createOrRenameUser(input: $args)
+    }`
+  }
 };

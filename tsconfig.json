@@ -6,11 +6,12 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "declaration": true,
-    "lib": ["es2017", "esnext.asynciterable"],
+    "skipLibCheck": true,
+    "lib": ["es2017", "esnext", "esnext.asynciterable"],
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "strict": true,
     "types": ["node"]
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*", "tools/graphql-to-ts.ts", "tools/graphql-to-ts.ts", "tools/q.ts"]
 }
