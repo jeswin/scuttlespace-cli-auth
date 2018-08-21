@@ -13,5 +13,5 @@
     "strict": true,
     "types": ["node"]
   },
-  "include": ["./src/**/*", "tools/graphql-to-ts.ts", "tools/graphql-to-ts.ts", "tools/q.ts"]
+  "include": ["./src/**/*"]
 }

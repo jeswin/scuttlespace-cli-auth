@@ -4,17 +4,17 @@ export default {
       mutation CreateOrRenameUser($args: CreateOrRenameUserArgs) {
         createOrRenameUser(input: $args)
       }`,
-    enableAccount: `
-      mutation EnableAccount($args: ChangeUserStatusArgs) {
-        enableAccount(input: $args)
+    destroyUser: `
+      mutation DestroyUser($args: ChangeUserStatusArgs) {
+        destroyUser(input: $args)
       }`,
-    disableAccount: `
-      mutation DisableAccount($args: ChangeUserStatusArgs) {
-        disableAccount(input: $args)
+    disableUser: `
+      mutation DisableUser($args: ChangeUserStatusArgs) {
+        disableUser(input: $args)
       }`,
-    destroyAccount: `
-      mutation DestroyAccount($args: ChangeUserStatusArgs) {
-        destroyAccount(input: $args)
+    enableUser: `
+      mutation EnableUser($args: ChangeUserStatusArgs) {
+        enableUser(input: $args)
       }`
   }
 };
