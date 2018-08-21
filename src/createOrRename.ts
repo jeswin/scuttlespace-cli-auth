@@ -24,7 +24,7 @@ export default async function createOrRename(
         const username: string = args.id;
         const messageId = msg.key;
 
-        const result = invokeCreateOrRenameUser(
+        const result = await invokeCreateOrRenameUser(
           {
             args: {
               externalId,
@@ -35,45 +35,40 @@ export default async function createOrRename(
           apolloClient
         );
 
-        return !result.errors
-          ? await (async () => {
-              const responseCode =
-                result.data && result.data.createOrRenameUser;
+        const responseCode = result.createOrRenameUser;
 
-              return responseCode
-                ? responseCode === "CREATED"
+        return responseCode
+          ? responseCode === "CREATED"
+            ? new Response(
+                `Your profile is accessible at https://${
+                  config.hostname
+                }/${username}.`,
+                messageId
+              )
+            : responseCode === "RENAMED"
+              ? new Response(
+                  `Your profile is now accessible at https://${
+                    config.hostname
+                  }/${username}.`,
+                  messageId
+                )
+              : responseCode === "TAKEN"
+                ? new Response(
+                    `The id '${username}' already exists. Choose a different id.`,
+                    messageId
+                  )
+                : responseCode === "OWN"
                   ? new Response(
-                      `Your profile is accessible at https://${
+                      `The id '${username}' is already yours and is accessible at https://${
                         config.hostname
                       }/${username}.`,
                       messageId
                     )
-                  : responseCode === "RENAMED"
-                    ? new Response(
-                        `Your profile is now accessible at https://${
-                          config.hostname
-                        }/${username}.`,
-                        messageId
-                      )
-                    : responseCode === "TAKEN"
-                      ? new Response(
-                          `The id '${username}' already exists. Choose a different id.`,
-                          messageId
-                        )
-                      : responseCode === "OWN"
-                        ? new Response(
-                            `The id '${username}' is already yours and is accessible at https://${
-                              config.hostname
-                            }/${username}.`,
-                            messageId
-                          )
-                        : exception("INVARIANT_VIOLATION", "")
-                : exception("INVARIANT_VIOLATION", "");
-            })()
-          : new Response(
-              result.errors[0] && result.errors[0].message,
-              messageId
-            );
+                  : exception(
+                      "INVALID_RESPONSE",
+                      `${responseCode} was unexpected.`
+                    )
+          : exception("INVALID_RESPONSE", `${responseCode} was unexpected.`);
       })()
     : undefined;
 }
