@@ -10,7 +10,7 @@ export interface ICreateOrRenameUserInput {
   } | null;
 }
 export interface ICreateOrRenameUser {
-  createOrRenameUser: string;
+  createOrRenameUser: any;
 }
 
 export async function invokeCreateOrRenameUser(
