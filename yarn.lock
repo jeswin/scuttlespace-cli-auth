@@ -67,6 +67,10 @@
     "@types/node" "*"
     "@types/pg-types" "*"
 
+"@types/prettier@^1.13.2":
+  version "1.13.2"
+  resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-1.13.2.tgz#ffe96278e712a8d4e467e367a338b05e22872646"
+
 "@types/should@^13.0.0":
   version "13.0.0"
   resolved "https://registry.yarnpkg.com/@types/should/-/should-13.0.0.tgz#96c00117f1896177848fdecfa336313c230c879e"

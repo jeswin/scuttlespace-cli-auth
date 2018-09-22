@@ -4,5 +4,6 @@
     "scuttlespace-commands-common",
     "scuttlespace-service-common",
     "scuttlespace-service-user-graphql-schema"
-  ]
+  ],
+  "localDevDependencies": ["graphql-to-ts"]
 }
