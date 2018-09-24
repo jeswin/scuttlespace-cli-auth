@@ -2,9 +2,7 @@ import * as graphqlToTS from "graphql-to-ts";
 import prettier = require("prettier");
 import gqlSchema from "scuttlespace-service-user-graphql-schema";
 import queries from "../src/queries";
-import { inspect, log } from "util";
-
-const camelCase = require("camelcase");
+import { inspect } from "util";
 
 const fixedSchema = gqlSchema
   .replace("extend type Query", "type Query")
@@ -20,34 +18,27 @@ const mutations: any = queries.mutations;
 if (mutations) {
   for (const key of Object.keys(queries.mutations)) {
     const generated = graphqlToTS.getQueries(mutations[key], fixedSchema);
-    console.log(inspect(gqlSchema);
-    console.log("........");
-    console.log(inspect(generated, undefined, 12));
+    for (const mutation of generated.mutations) {
+      const invokeFunctionName = `invoke${mutation.name}`;
 
-    output += "\n";
-
-    // for (const mutation of generated.mutations) {
-    //   const invokeFunctionName = `invoke${mutation.name}`;
-
-    //   const invokeFunctionText = `  
-    //   export async function ${invokeFunctionName}(
-    //     input: I${mutation.[0]},
-    //     apolloClient: ApolloClient<any>
-    //   ): Promise<I${interfaces[1]}> {
-    //     try {
-    //       const result = await apolloClient.mutate({
-    //         mutation: gql(queries.mutations.${key}),
-    //         variables: input.args
-    //       });
-    //       return result.data as any;
-    //     } catch (ex) {
-    //       throw ex;
-    //     }
-    //   }
-    //   `;
-    // }
-
-    // output += invokeFunctionText;
-    output += "\n";
+      const invokeFunctionBody = `
+        export async function ${invokeFunctionName}(
+          
+          apolloClient: ApolloClient<any>
+        ): Promise<I${"interfaces[1]"}> {
+          try {
+            const result = await apolloClient.mutate({
+              mutation: gql(queries.mutations.${key}),
+              variables: input.args
+            });
+            return result.data as any;
+          } catch (ex) {
+            throw ex;
+          }
+        }
+        `;
+      output += invokeFunctionBody;
+      output += "\n";
+    }
   }
 }
