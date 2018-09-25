@@ -20,11 +20,13 @@ if (mutations) {
     const generated = graphqlToTS.getQueries(mutations[key], fixedSchema);
     for (const mutation of generated.mutations) {
       const invokeFunctionName = `invoke${mutation.name}`;
-
+      const invokeFunctionArgs = mutation.variables
+        .map(x => `${x.name}: ${graphqlToTS.typeToString(x.type)}`)
+        .concat("apolloClient: ApolloClient<any>")
+        .join(", ");
       const invokeFunctionBody = `
         export async function ${invokeFunctionName}(
-          
-          apolloClient: ApolloClient<any>
+          ${invokeFunctionArgs}
         ): Promise<I${"interfaces[1]"}> {
           try {
             const result = await apolloClient.mutate({
@@ -42,3 +44,6 @@ if (mutations) {
     }
   }
 }
+
+console.log(output);
+console.log(inspect(output, undefined, 12));
