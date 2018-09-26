@@ -1,8 +1,9 @@
+import changeCase = require("change-case");
 import * as graphqlToTS from "graphql-to-ts";
 import prettier = require("prettier");
 import gqlSchema from "scuttlespace-service-user-graphql-schema";
 import queries from "../src/queries";
-import { inspect } from "util";
+import { ITSQueries, ITSQuery } from "graphql-to-ts";
 
 const fixedSchema = gqlSchema
   .replace("extend type Query", "type Query")
@@ -11,39 +12,54 @@ const fixedSchema = gqlSchema
 let output = "";
 output += `import { ApolloClient } from "apollo-client";`;
 output += `import gql from "graphql-tag";`;
-output += `import queries from "./queries";`;
 output += "\n\n";
 
-const mutations: any = queries.mutations;
-if (mutations) {
-  for (const key of Object.keys(queries.mutations)) {
-    const generated = graphqlToTS.getQueries(mutations[key], fixedSchema);
-    for (const mutation of generated.mutations) {
-      const invokeFunctionName = `invoke${mutation.name}`;
-      const invokeFunctionArgs = mutation.variables
-        .map(x => `${x.name}: ${graphqlToTS.typeToString(x.type)}`)
-        .concat("apolloClient: ApolloClient<any>")
-        .join(", ");
-      const invokeFunctionBody = `
-        export async function ${invokeFunctionName}(
-          ${invokeFunctionArgs}
-        ): Promise<I${"interfaces[1]"}> {
-          try {
-            const result = await apolloClient.mutate({
-              mutation: gql(queries.mutations.${key}),
-              variables: input.args
-            });
-            return result.data as any;
-          } catch (ex) {
-            throw ex;
+if (queries.queries) {
+  const generated = graphqlToTS.getQueries(queries.queries, fixedSchema);
+  generateCode("query", "query", generated.queries);
+}
+
+if (queries.mutations) {
+  const generated = graphqlToTS.getQueries(queries.mutations, fixedSchema);
+  generateCode("mutate", "mutation", generated.mutations);
+}
+
+function generateCode(
+  apolloClientMethod: "mutate" | "query",
+  type: "mutation" | "query",
+  parsedQueries: ITSQuery[]
+) {
+  for (const query of parsedQueries) {
+    const invokeFunctionName = `invoke${query.name}`;
+    const invokeFunctionArgs = query.variables
+      .map(x => `${x.name}: ${graphqlToTS.typeToString(x.type, true)}`)
+      .concat("apolloClient: ApolloClient<any>")
+      .join(", ");
+    const apolloClientVariables = query.variables.map(x => x.name).join(", ");
+    const invokeFunctionBody = `
+          const ${changeCase.camelCase(query.name)}GQL = \`${query.gql}\`;
+          export async function ${invokeFunctionName}(
+            ${invokeFunctionArgs}
+          ): Promise<${graphqlToTS.selectionObjectToTypeString(
+            query.selections
+          )}> {
+            try {
+              const result = await apolloClient.${apolloClientMethod}({
+                ${type}: gql(${invokeFunctionName}GQL),
+                variables: {
+                  ${apolloClientVariables}
+                }
+              });
+              return result.data as any;
+            } catch (ex) {
+              throw ex;
+            }
           }
-        }
-        `;
-      output += invokeFunctionBody;
-      output += "\n";
-    }
+          `;
+    output += invokeFunctionBody;
+    output += "\n";
   }
 }
 
-console.log(output);
-console.log(inspect(output, undefined, 12));
+console.log(prettier.format(output, { parser: "typescript" }));
+// console.log(output);
